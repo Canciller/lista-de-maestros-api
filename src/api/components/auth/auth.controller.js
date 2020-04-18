@@ -34,7 +34,7 @@ module.exports = {
                                     true
                                 )
                             );
-                        const payload = { username: user.username };
+                        const payload = { username: user.username, role: user.role };
                         const token = jwt.sign(payload, process.env.SECRET, {
                             expiresIn: '1h',
                         });
@@ -42,7 +42,7 @@ module.exports = {
                             httpOnly: true,
                         }).json({
                             token,
-                            username: user.username,
+                            ...payload
                         });
                     }
                 );
@@ -62,7 +62,11 @@ module.exports = {
         });
 
         user.save()
-            .then((savedUser) => res.json(savedUser))
+            .then((savedUser) => res.json({
+                username: savedUser.password,
+                email: savedUser.email,
+                role: savedUser.role
+            }))
             .catch((err) => next(err));
     },
     checkToken: (req, res) => res.sendStatus(200),

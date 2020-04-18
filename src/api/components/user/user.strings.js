@@ -1,7 +1,7 @@
 module.exports = {
     username: {
         required: 'El nombre de usuario es requerido.',
-        validate: 'El nombre de usuario no es valido.',
+        match: 'El nombre de usuario no es valido.',
         minlength: (minlength) =>
             `El nombre de usuario es más corto que la longitud mínima permitida (${minlength}).`,
         maxlength: (maxlength) =>

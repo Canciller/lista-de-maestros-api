@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         minlength: [4, strings.username.minlength(4)],
         maxlength: [32, strings.username.maxlength(32)],
         required: [true, strings.username.required],
-        match: [/^[0-9a-zA-Z_-]+$/, strings.username.validate],
+        match: [/^[0-9a-zA-Z_-]+$/, strings.username.match],
     },
     email: {
         type: String,
