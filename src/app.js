@@ -66,6 +66,9 @@ app.get('*', (req, res, next) => {
 
 app.use(function (err, req, res, next) {
     if (res.headersSent) return next(err);
+
+    console.error(err);
+
     res.status(httpStatus.INTERNAL_SERVER_ERROR);
 
     if (err.status) res.status(err.status);
