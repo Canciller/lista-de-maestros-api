@@ -52,8 +52,7 @@ module.exports = {
     register: function (req, res, next) {
         if (req.body.password != req.body.repeatPassword)
             return next(
-                new APIError(strings.repeatPassword, httpStatus.FORBIDDEN),
-                true
+                new APIError(strings.repeatPassword, httpStatus.FORBIDDEN, true)
             );
 
         const user = new User({
