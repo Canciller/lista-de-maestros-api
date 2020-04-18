@@ -63,7 +63,7 @@ module.exports = {
 
         user.save()
             .then((savedUser) => res.json({
-                username: savedUser.password,
+                username: savedUser.username,
                 email: savedUser.email,
                 role: savedUser.role
             }))
