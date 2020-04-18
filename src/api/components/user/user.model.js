@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         minlength: [4, strings.username.minlength(4)],
         maxlength: [32, strings.username.maxlength(32)],
         required: [true, strings.username.required],
-        match: [ /^[0-9a-zA-Z_-]+$/, strings.username.validate ],
+        match: [/^[0-9a-zA-Z_-]+$/, strings.username.validate],
     },
     email: {
         type: String,
@@ -30,7 +30,6 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, strings.password.required],
-        select: false,
         minlength: [6, strings.password.minlength(6)],
     },
     role: {

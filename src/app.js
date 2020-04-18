@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const cors = require('cors');
 
 const userRoutes = require('./api/components/user/user.route');
+const authRoutes = require('./api/components/auth/auth.route');
 
 const app = express();
 
@@ -55,5 +56,6 @@ app.use(cookieParser());
 
 // Routes
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 module.exports = app;
