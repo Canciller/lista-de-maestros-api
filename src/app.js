@@ -7,11 +7,13 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('./utils/APIError');
 
 const userRoutes = require('./api/components/user/user.route');
 const authRoutes = require('./api/components/auth/auth.route');
+const notFoundRoute = require('./api/components/notFound/notFound.route');
 
 const app = express();
 
@@ -60,9 +62,7 @@ app.use(cookieParser());
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
 
-app.get('*', (req, res, next) => {
-    next(new APIError(httpStatus['404_MESSAGE'], httpStatus.NOT_FOUND, true));
-});
+app.use('*', notFoundRoute);
 
 app.use(function (err, req, res, next) {
     if (res.headersSent) return next(err);
@@ -71,9 +71,13 @@ app.use(function (err, req, res, next) {
 
     res.status(httpStatus.INTERNAL_SERVER_ERROR);
 
-    if (err.status) res.status(err.status);
+    if (err instanceof mongoose.Error) {
+        res.json({
+            ...err,
+        });
+    } else if (err instanceof APIError && err.isPublic) {
+        res.status(err.status);
 
-    if (err.isPublic)
         res.json({
             error: {
                 name: err.name,
@@ -81,14 +85,11 @@ app.use(function (err, req, res, next) {
                 status: err.status,
             },
         });
-    else
+    } else {
         res.json({
-            error: {
-                name: err.name,
-                message: httpStatus['500_MESSAGE'],
-                status: httpStatus.INTERNAL_SERVER_ERROR,
-            },
+            error: err,
         });
+    }
 });
 
 module.exports = app;
