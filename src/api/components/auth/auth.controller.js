@@ -34,7 +34,10 @@ module.exports = {
                                     true
                                 )
                             );
-                        const payload = { username: user.username, role: user.role };
+                        const payload = {
+                            username: user.username,
+                            role: user.role,
+                        };
                         const token = jwt.sign(payload, process.env.SECRET, {
                             expiresIn: '1h',
                         });
@@ -42,12 +45,12 @@ module.exports = {
                             httpOnly: true,
                         }).json({
                             token,
-                            ...payload
+                            ...payload,
                         });
                     }
                 );
             })
-            .catch((err) => next(err));
+            .catch(next);
     },
     register: function (req, res, next) {
         if (req.body.password != req.body.repeatPassword)
@@ -62,12 +65,14 @@ module.exports = {
         });
 
         user.save()
-            .then((savedUser) => res.json({
-                username: savedUser.username,
-                email: savedUser.email,
-                role: savedUser.role
-            }))
-            .catch((err) => next(err));
+            .then((savedUser) =>
+                res.json({
+                    username: savedUser.username,
+                    email: savedUser.email,
+                    role: savedUser.role,
+                })
+            )
+            .catch(next);
     },
     checkToken: (req, res) => res.sendStatus(200),
 };

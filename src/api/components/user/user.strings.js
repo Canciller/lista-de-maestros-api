@@ -16,4 +16,5 @@ module.exports = {
         minlength: (minlength) =>
             `La contraseña es más corta que la longitud mínima permitida (${minlength}).`,
     },
+    notFound: 'El usuario no existe.',
 };

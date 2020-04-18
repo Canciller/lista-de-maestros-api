@@ -1,13 +1,28 @@
 const User = require('./user.model');
+const httpStatus = require('http-status');
+const APIError = require('../../../utils/APIError');
+
+const strings = require('./user.strings');
 
 module.exports = {
-    load: function (req, res, next, id) {
-        User.findById(id)
+    load: function (req, res, next, username) {
+        User.findOne({
+            //username: new RegExp(`^${username}$`, 'i'),
+            username: username,
+        })
             .then((user) => {
                 req.user = user;
-                return next();
+                if (user) next();
+                else
+                    next(
+                        new APIError(
+                            strings.notFound,
+                            httpStatus.NOT_FOUND,
+                            true
+                        )
+                    );
             })
-            .catch((err) => next(err));
+            .catch(next);
     },
     get: function (req, res) {
         return res.json(req.user);
@@ -21,7 +36,7 @@ module.exports = {
 
         user.save()
             .then((savedUser) => res.json(savedUser))
-            .catch((err) => next(err));
+            .catch(next);
     },
     update: function (req, res, next) {
         const user = req.user;
@@ -31,18 +46,18 @@ module.exports = {
 
         user.save()
             .then((savedUser) => res.json(savedUser))
-            .catch((err) => next(err));
+            .catch(next);
     },
     list: function (req, res, next) {
         const { limit = 50, skip = 0 } = req.query;
         User.list({ limit, skip })
             .then((users) => res.json(users))
-            .catch((err) => next(err));
+            .catch(next);
     },
     remove: function (req, res, next) {
         const user = req.user;
         user.remove()
-            .then((deleteUser) => res.json(deletedUser))
-            .catch((err) => next(err));
+            .then((deletedUser) => res.json(deletedUser))
+            .catch(next);
     },
 };
