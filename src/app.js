@@ -9,10 +9,12 @@ const hpp = require('hpp');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
+const { ValidationError } = require('express-validation');
 const APIError = require('./utils/APIError');
 
-const userRoutes = require('./api/components/user/user.route');
 const authRoutes = require('./api/components/auth/auth.route');
+const userRoutes = require('./api/components/user/user.route');
+const maestroRoutes = require('./api/components/maestro/maestro.route');
 const notFoundRoute = require('./api/components/notFound/notFound.route');
 
 const app = express();
@@ -59,36 +61,35 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Routes
-app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/maestros', maestroRoutes);
+app.use('/api/v1/users', userRoutes);
 
 app.use('*', notFoundRoute);
 
-app.use(function (err, req, res, next) {
-    if (res.headersSent) return next(err);
+app.use(function (error, req, res, next) {
+    if (res.headersSent) return next(error);
 
-    console.error(err);
+    console.error(error);
 
     res.status(httpStatus.INTERNAL_SERVER_ERROR);
 
-    if (err instanceof mongoose.Error) {
-        res.json({
-            ...err,
-        });
-    } else if (err instanceof APIError && err.isPublic) {
-        res.status(err.status);
+    if (error instanceof mongoose.Error) {
+        res.json({ error });
+    } else if (error instanceof APIError && error.isPublic) {
+        res.status(error.status);
 
         res.json({
             error: {
-                name: err.name,
-                message: err.message,
-                status: err.status,
+                name: error.name,
+                message: error.message,
+                status: error.status,
             },
         });
+    } else if (error instanceof ValidationError) {
+        res.status(error.statusCode).json({ error });
     } else {
-        res.json({
-            error: err,
-        });
+        res.json({ error });
     }
 });
 

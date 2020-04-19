@@ -7,10 +7,6 @@ const saltRounds = process.env.SALT_ROUNDS || 10;
 
 const strings = require('./user.strings');
 
-const isValidUsername = function (value) {
-    return /^[0-9a-zA-Z_-]+$/.test(value);
-};
-
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -19,7 +15,7 @@ const UserSchema = new mongoose.Schema({
         minlength: [4, strings.username.minlength(4)],
         maxlength: [32, strings.username.maxlength(32)],
         required: [true, strings.username.required],
-        match: [/^[0-9a-zA-Z_-]+$/, strings.username.validate],
+        match: [/^[0-9a-zA-Z_-]+$/, strings.username.match],
     },
     email: {
         type: String,
@@ -40,7 +36,6 @@ const UserSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true,
-        select: false,
     },
     createdAt: {
         type: Date,

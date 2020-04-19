@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
 const app = require('./app');
 
 const port = process.env.PORT || 8080;
@@ -20,6 +21,7 @@ var connectWithRetry = () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
+            useFindAndModify: false,
         },
         (err) => {
             if (err) {

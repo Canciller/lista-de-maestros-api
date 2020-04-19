@@ -43,10 +43,7 @@ module.exports = {
                         });
                         res.cookie('token', token, {
                             httpOnly: true,
-                        }).json({
-                            token,
-                            ...payload,
-                        });
+                        }).json(payload);
                     }
                 );
             })

@@ -2,12 +2,9 @@ const User = require('./user.model');
 const httpStatus = require('http-status');
 const APIError = require('../../../utils/APIError');
 
-const strings = require('./user.strings');
-
 module.exports = {
     load: function (req, res, next, username) {
         User.findOne({
-            //username: new RegExp(`^${username}$`, 'i'),
             username: username,
         })
             .then((user) => {
@@ -16,7 +13,7 @@ module.exports = {
                 else
                     next(
                         new APIError(
-                            strings.notFound,
+                            httpStatus['404_MESSAGE'],
                             httpStatus.NOT_FOUND,
                             true
                         )
