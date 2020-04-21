@@ -5,33 +5,30 @@ const APIError = require('../../../utils/APIError');
 
 const saltRounds = process.env.SALT_ROUNDS || 10;
 
-const strings = require('./user.strings');
-
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: true,
         lowercase: true,
-        minlength: [4, strings.username.minlength(4)],
-        maxlength: [32, strings.username.maxlength(32)],
-        required: [true, strings.username.required],
-        match: [/^[0-9a-zA-Z_-]+$/, strings.username.match],
+        maxlength: 32,
+        required: true,
+        match: /^[0-9a-zA-Z_-]+$/,
     },
     email: {
         type: String,
-        required: [true, strings.email.required],
+        required: true,
         unique: true,
-        validate: [validator.isEmail, strings.email.validate],
+        validate: validator.isEmail,
     },
     password: {
         type: String,
-        required: [true, strings.password.required],
-        minlength: [6, strings.password.minlength(6)],
+        required: true,
+        minlength: 6,
     },
     role: {
         type: String,
-        enum: ['admin', 'teacher', 'student'],
-        default: 'student',
+        enum: ['Administrador', 'Estudiante', 'Maestro'],
+        default: 'Estudiante',
     },
     active: {
         type: Boolean,
@@ -80,7 +77,7 @@ UserSchema.statics = {
                     return user;
                 }
                 const err = new APIError(
-                    'No such user exists!',
+                    httpStatus['404_MESSAGE'],
                     httpStatus.NOT_FOUND
                 );
                 return Promise.reject(err);

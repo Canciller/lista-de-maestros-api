@@ -73,12 +73,12 @@ app.use(function (error, req, res, next) {
     console.error(error);
 
     res.status(httpStatus.INTERNAL_SERVER_ERROR);
+    if(error.status) res.status(error.status);
+    else if(error.statusCode) res.status(error.statusCode);
 
     if (error instanceof mongoose.Error) {
         res.json({ error });
     } else if (error instanceof APIError && error.isPublic) {
-        res.status(error.status);
-
         res.json({
             error: {
                 name: error.name,
@@ -87,7 +87,7 @@ app.use(function (error, req, res, next) {
             },
         });
     } else if (error instanceof ValidationError) {
-        res.status(error.statusCode).json({ error });
+        res.json({ error });
     } else {
         res.json({ error });
     }

@@ -41,9 +41,11 @@ module.exports = {
                         const token = jwt.sign(payload, process.env.SECRET, {
                             expiresIn: '1h',
                         });
-                        res.cookie('token', token, {
-                            httpOnly: true,
-                        }).json(payload);
+                        res.json({
+                            token,
+                            username: payload.username,
+                            role: payload.role
+                        });
                     }
                 );
             })
@@ -52,7 +54,11 @@ module.exports = {
     register: function (req, res, next) {
         if (req.body.password != req.body.repeatPassword)
             return next(
-                new APIError(strings.repeatPassword, httpStatus.FORBIDDEN, true)
+                new APIError(
+                    httpStatus[`${httpStatus.UNAUTHORIZED}_MESSAGE`],
+                    httpStatus.UNAUTHORIZED,
+                    true
+                )
             );
 
         const user = new User({
