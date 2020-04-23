@@ -22,7 +22,7 @@ const app = express();
 // Allow Cross-Origin requests
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: [ 'http://localhost:3000', 'https://lista-de-maestros.herokuapp.com' ],
         credentials: true,
     })
 );
