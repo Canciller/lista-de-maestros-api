@@ -21,9 +21,6 @@ module.exports = {
             })
             .catch(next);
     },
-    current: function(req, res) {
-        res.json(req.user);
-    },
     get: function (req, res) {
         return res.json(req.user);
     },

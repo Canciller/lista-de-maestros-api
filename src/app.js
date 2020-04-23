@@ -20,12 +20,18 @@ const notFoundRoute = require('./api/components/notFound/notFound.route');
 const app = express();
 
 // Allow Cross-Origin requests
-app.use(cors());
+app.use(
+    cors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+    })
+);
 
 // Set security HTTP headers
 app.use(helmet());
 
 // Limit request from the same API
+/*
 const limiter = rateLimit({
     max: 150,
     windowMs: 60 * 60 * 1000,
@@ -33,6 +39,7 @@ const limiter = rateLimit({
 });
 
 app.use('/api', limiter);
+*/
 
 // Body parser, reading data from body into req.body
 app.use(
@@ -73,8 +80,8 @@ app.use(function (error, req, res, next) {
     console.error(error);
 
     res.status(httpStatus.INTERNAL_SERVER_ERROR);
-    if(error.status) res.status(error.status);
-    else if(error.statusCode) res.status(error.statusCode);
+    if (error.status) res.status(error.status);
+    else if (error.statusCode) res.status(error.statusCode);
 
     if (error instanceof mongoose.Error) {
         res.json({ error });

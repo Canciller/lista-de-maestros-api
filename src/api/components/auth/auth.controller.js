@@ -34,17 +34,21 @@ module.exports = {
                                     true
                                 )
                             );
+
                         const payload = {
                             username: user.username,
                             role: user.role,
                         };
+
                         const token = jwt.sign(payload, process.env.SECRET, {
                             expiresIn: '1h',
                         });
-                        res.json({
-                            token,
+
+                        res.cookie('token', token, {
+                            httpOnly: true,
+                        }).json({
                             username: payload.username,
-                            role: payload.role
+                            role: payload.role,
                         });
                     }
                 );
@@ -77,5 +81,6 @@ module.exports = {
             )
             .catch(next);
     },
+    logout: (req, res) => res.clearCookie('token').sendStatus(200),
     checkToken: (req, res) => res.sendStatus(200),
 };
