@@ -12,17 +12,23 @@ const httpStatus = require('http-status');
 const { ValidationError } = require('express-validation');
 const APIError = require('./utils/APIError');
 
+const APIRouter = require('express').Router();
 const authRoutes = require('./api/components/auth/auth.route');
 const userRoutes = require('./api/components/user/user.route');
 const maestroRoutes = require('./api/components/maestro/maestro.route');
-const notFoundRoute = require('./api/components/notFound/notFound.route');
+const questionRoutes = require('./api/components/question/question.route');
+const categoryRoutes = require('./api/components/category/category.route');
+const notFoundRoute = require('./api/components/not-found/not-found.route');
 
 const app = express();
 
 // Allow Cross-Origin requests
 app.use(
     cors({
-        origin: [ 'http://localhost:3000', 'https://lista-de-maestros.herokuapp.com' ],
+        origin: [
+            'http://localhost:3000',
+            'https://lista-de-maestros.herokuapp.com',
+        ],
         credentials: true,
     })
 );
@@ -68,9 +74,13 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Routes
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/maestros', maestroRoutes);
-app.use('/api/v1/users', userRoutes);
+APIRouter.use('/auth', authRoutes)
+    .use('/maestros', maestroRoutes)
+    .use('/users', userRoutes)
+    .use('/questions', questionRoutes)
+    .use('/categories', categoryRoutes);
+
+app.use('/api/v1', APIRouter);
 
 app.use('*', notFoundRoute);
 

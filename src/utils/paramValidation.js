@@ -3,9 +3,10 @@ const Joi = require('@hapi/joi');
 module.exports = {
     createMaestro: {
         body: Joi.object({
-            nombre: Joi.string().required(),
-            apellido: Joi.string().required(),
+            firstname: Joi.string().required(),
+            lastname: Joi.string().required(),
             degree: Joi.string().required(),
+            gender: Joi.string().required(),
         }),
     },
     createUser: {
@@ -13,6 +14,22 @@ module.exports = {
             username: Joi.string().required(),
             email: Joi.string().email().required(),
             password: Joi.string().required(),
+        }),
+    },
+    createQuestion: {
+        body: Joi.object({
+            order: Joi.number().required(),
+            category: Joi.string().required(),
+            text: Joi.string().required(),
+            lang: Joi.string().required(),
+            type: Joi.string(),
+        }),
+    },
+    createCategory: {
+        body: Joi.object({
+            text: Joi.string().required(),
+            name: Joi.string().required(),
+            lang: Joi.string().required(),
         }),
     },
     login: {

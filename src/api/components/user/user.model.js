@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const APIError = require('../../../utils/APIError');
+const shortId = require('shortid');
 
 const saltRounds = process.env.SALT_ROUNDS || 10;
 
 const UserSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        default: shortId.generate,
+    },
     username: {
         type: String,
+        index: true,
         unique: true,
         lowercase: true,
         maxlength: 32,
@@ -16,6 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     email: {
         type: String,
+        index: true,
         required: true,
         unique: true,
         validate: validator.isEmail,
@@ -64,26 +70,6 @@ UserSchema.methods.isPasswordCorrect = function (password, callback) {
 };
 
 UserSchema.statics = {
-    /**
-     * Get user
-     * @param {ObjectId} id - The objectId of user.
-     * @returns {Promise<User, APIError>}
-     */
-    get(id) {
-        return this.findById(id)
-            .exec()
-            .then((user) => {
-                if (user) {
-                    return user;
-                }
-                const err = new APIError(
-                    httpStatus['404_MESSAGE'],
-                    httpStatus.NOT_FOUND
-                );
-                return Promise.reject(err);
-            });
-    },
-
     /**
      * List users in descending order of 'createdAt' timestamp.
      * @param {number} skip - Number of users to be skipped.

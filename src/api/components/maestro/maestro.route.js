@@ -5,10 +5,15 @@ const MaestroController = require('./maestro.controller');
 
 router
     .route('/')
+    .get(MaestroController.list)
     .post(validate(paramValidation.createMaestro), MaestroController.create);
 
-router.route('/:url').get(MaestroController.get);
+router
+    .route('/:id')
+    .get(MaestroController.get)
+    .put(MaestroController.update)
+    .delete(MaestroController.remove);
 
-router.param('url', MaestroController.load);
+router.param('id', MaestroController.load);
 
 module.exports = router;

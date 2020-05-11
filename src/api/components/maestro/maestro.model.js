@@ -1,31 +1,27 @@
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
-
-//autoIncrement.initialize(mongoose.connection);
+const shortId = require('shortid');
 
 const MaestroSchema = new mongoose.Schema({
-    nombre: {
+    _id: {
         type: String,
-        required: true,
-        match: /^[a-z ,\.'-]+$/i,
+        default: shortId.generate,
     },
-    apellido: {
+    firstname: {
         type: String,
         required: true,
-        match: /^[a-z ,\.'-]+$/i,
+    },
+    lastname: {
+        type: String,
+        required: true,
     },
     degree: {
         type: String,
         required: true,
     },
-    url: {
+    gender: {
         type: String,
+        enum: ['Masculino', 'Femenino', 'Otro'],
         required: true,
-        lowercase: true,
-    },
-    count: {
-        type: Number,
-        default: 0,
     },
     active: {
         type: Boolean,
@@ -47,5 +43,4 @@ MaestroSchema.statics = {
     },
 };
 
-//MaestroSchema.plugin(autoIncrement.plugin, 'Maestro');
 module.exports = mongoose.model('Maestro', MaestroSchema);
