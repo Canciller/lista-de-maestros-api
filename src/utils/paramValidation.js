@@ -7,6 +7,9 @@ module.exports = {
             lastname: Joi.string().required(),
             degree: Joi.string().required(),
             gender: Joi.string().required(),
+            universidades: Joi.array(),
+            facultades: Joi.array(),
+            materias: Joi.array(),
         }),
     },
     createUser: {
@@ -30,6 +33,21 @@ module.exports = {
             text: Joi.string().required(),
             name: Joi.string().required(),
             lang: Joi.string().required(),
+        }),
+    },
+    createUniversidad: {
+        body: Joi.object({
+            name: Joi.string().required(),
+        }),
+    },
+    createFacultad: {
+        body: Joi.object({
+            name: Joi.string().required(),
+        }),
+    },
+    createMateria: {
+        body: Joi.object({
+            name: Joi.string().required(),
         }),
     },
     login: {

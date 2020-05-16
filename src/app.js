@@ -19,6 +19,9 @@ const maestroRoutes = require('./api/components/maestro/maestro.route');
 const questionRoutes = require('./api/components/question/question.route');
 const categoryRoutes = require('./api/components/category/category.route');
 const notFoundRoute = require('./api/components/not-found/not-found.route');
+const materiaRoutes = require('./api/components/materia/materia.route');
+const universidadRoutes = require('./api/components/universidad/universidad.route');
+const facultadRoutes = require('./api/components/facultad/facultad.route');
 
 const app = express();
 
@@ -78,7 +81,10 @@ APIRouter.use('/auth', authRoutes)
     .use('/maestros', maestroRoutes)
     .use('/users', userRoutes)
     .use('/questions', questionRoutes)
-    .use('/categories', categoryRoutes);
+    .use('/categories', categoryRoutes)
+    .use('/materias', materiaRoutes)
+    .use('/universidades', universidadRoutes)
+    .use('/facultades', facultadRoutes);
 
 app.use('/api/v1', APIRouter);
 
