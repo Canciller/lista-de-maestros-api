@@ -125,7 +125,7 @@ app.use(function (error, req, res, next) {
             error: {
                 name: error.name,
                 message: {
-                    [error.path]: error.message
+                    [error.path]: error.message,
                 },
                 status,
             },

@@ -1,5 +1,8 @@
 const Maestro = require('./maestro.model');
+const Facultad = require('../facultad/facultad.model');
 const NotFoundError = require('../../../util/NotFoundError');
+const ValidationError = require('../../../util/ValidationError');
+const strings = require('./maestro.strings');
 
 module.exports = {
     load: function (req, res, next, id) {
@@ -28,8 +31,36 @@ module.exports = {
             gender: req.body.gender,
         });
 
-        maestro
-            .save()
+        Facultad.findOne({ name: req.body.facultad })
+            .then((facultad) => {
+                if (facultad) {
+                    maestro.facultades = {
+                        [facultad._id]: [],
+                    };
+
+                    return Maestro.findOne({
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        degree: req.body.degree,
+                        gender: req.body.gender,
+                        [`facultades.${facultad._id}`]: { $exists: true },
+                    });
+                } else
+                    throw new ValidationError(
+                        'facultad',
+                        strings.facultad.missing
+                    );
+            })
+            .then((foundMaestro) => {
+                if (foundMaestro) {
+                    throw new ValidationError(
+                        'facultad',
+                        strings.facultad.unique
+                    );
+                } else {
+                    return maestro.save();
+                }
+            })
             .then((savedMaestro) => res.json(savedMaestro))
             .catch(next);
     },

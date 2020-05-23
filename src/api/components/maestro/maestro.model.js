@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const shortId = require('shortid');
+const strings = require('./maestro.strings');
+const ValidationError = require('../../../util/ValidationError');
 
 const MaestroSchema = new mongoose.Schema({
     _id: {
@@ -8,43 +10,42 @@ const MaestroSchema = new mongoose.Schema({
     },
     firstname: {
         type: String,
-        required: true,
+        required: [true, strings.firstname.required],
     },
     lastname: {
         type: String,
-        required: true,
+        required: [true, strings.lastname.required],
     },
     degree: {
         type: String,
-        required: true,
+        enum: {
+            values: [
+                'Licenciatura',
+                'Ingeniería',
+                'Maestría',
+                'Doctorado'
+            ],
+            message: strings.degree.enum,
+        },
+        required: [true, strings.degree.required],
     },
     gender: {
         type: String,
-        enum: ['Masculino', 'Femenino', 'Otro'],
-        required: true,
-    },
-    universidades: [
-        {
-            universidad: {
-                type: String,
-                ref: 'Universidad',
-            },
-            facultades: [
-                {
-                    facultad: {
-                        type: String,
-                        red: 'Facultad',
-                    },
-                    materias: [
-                        {
-                            type: String,
-                            red: 'Materia',
-                        },
-                    ],
-                },
-            ],
+        enum: {
+            values: ['Masculino', 'Femenino', 'Otro'],
+            message: strings.gender.enum,
         },
-    ],
+        required: [true, strings.gender.required],
+    },
+    facultades: {
+        type: Map,
+        of: [
+            {
+                type: String,
+                ref: 'Materia',
+            },
+        ],
+    },
     active: {
         type: Boolean,
         default: true,
@@ -53,6 +54,10 @@ const MaestroSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+});
+
+MaestroSchema.pre('save', function (next) {
+    next();
 });
 
 MaestroSchema.statics = {

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const shortId = require('shortid');
 const ValidationError = require('../../../util/ValidationError');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
 const FacultadSchema = new mongoose.Schema(
     {
@@ -35,6 +36,8 @@ FacultadSchema.plugin(uniqueValidator, {
     },
 });
 
+FacultadSchema.plugin(mongoose_fuzzy_searching, { fields: ['name'] });
+
 FacultadSchema.pre('save', function (next) {
     if (this.isNew || this.isModified('universidad')) {
         const Universidad = mongoose.model('Universidad');
@@ -48,6 +51,7 @@ FacultadSchema.pre('save', function (next) {
                 } else {
                     next(
                         new ValidationError(
+                            'universidad',
                             `La universidad '${document.universidad}' no existe.`
                         )
                     );
