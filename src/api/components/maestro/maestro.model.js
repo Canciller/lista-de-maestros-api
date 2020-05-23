@@ -23,30 +23,28 @@ const MaestroSchema = new mongoose.Schema({
         enum: ['Masculino', 'Femenino', 'Otro'],
         required: true,
     },
-    universidades: {
-        type: [
-            {
+    universidades: [
+        {
+            universidad: {
                 type: String,
                 ref: 'Universidad',
             },
-        ],
-    },
-    facultades: {
-        type: [
-            {
-                type: String,
-                ref: 'Facultad',
-            },
-        ],
-    },
-    materias: {
-        type: [
-            {
-                type: String,
-                ref: 'Materia',
-            },
-        ],
-    },
+            facultades: [
+                {
+                    facultad: {
+                        type: String,
+                        red: 'Facultad',
+                    },
+                    materias: [
+                        {
+                            type: String,
+                            red: 'Materia',
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
     active: {
         type: Boolean,
         default: true,

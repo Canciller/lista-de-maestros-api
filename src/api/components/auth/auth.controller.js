@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const User = require('../user/user.model');
-const APIError = require('../../../utils/APIError');
+const APIError = require('../../../util/APIError');
+const ValidationError = require('../../../util/ValidationError');
 
 const strings = require('./auth.strings');
 
@@ -58,11 +59,7 @@ module.exports = {
     register: function (req, res, next) {
         if (req.body.password != req.body.repeatPassword)
             return next(
-                new APIError(
-                    httpStatus[`${httpStatus.UNAUTHORIZED}_MESSAGE`],
-                    httpStatus.UNAUTHORIZED,
-                    true
-                )
+                new ValidationError('repeatPassword', strings.repeatPassword)
             );
 
         const user = new User({

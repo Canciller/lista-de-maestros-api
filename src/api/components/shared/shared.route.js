@@ -1,15 +1,16 @@
-const router = require('express').Router();
-const { validate } = require('express-validation');
-const paramValidation = require('../../../utils/paramValidation');
+const Router = require('express').Router;
 
-module.exports = function(Controller, validation) {
-    router.route('/')
+module.exports = function (Controller) {
+    let router = Router();
+
+    router
+        .route('/')
         .get(Controller.list)
-        .post(validate(paramValidation[validation]), Controller.create);
-    
+        .post(Controller.create);
+
     router.route('/:id', Controller.get);
 
     router.param('id', Controller.load);
 
     return router;
-}
+};

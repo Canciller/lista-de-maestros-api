@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
@@ -7,21 +9,27 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
-const mongoose = require('mongoose');
+
 const httpStatus = require('http-status');
-const { ValidationError } = require('express-validation');
-const APIError = require('./utils/APIError');
+
+const APIError = require('./util/APIError');
+const ValidationError = require('./util/ValidationError');
 
 const APIRouter = require('express').Router();
+
+const notFoundRoute = require('./api/components/not-found/not-found.route');
+
 const authRoutes = require('./api/components/auth/auth.route');
+
 const userRoutes = require('./api/components/user/user.route');
 const maestroRoutes = require('./api/components/maestro/maestro.route');
+
 const questionRoutes = require('./api/components/question/question.route');
 const categoryRoutes = require('./api/components/category/category.route');
-const notFoundRoute = require('./api/components/not-found/not-found.route');
-const materiaRoutes = require('./api/components/materia/materia.route');
+
 const universidadRoutes = require('./api/components/universidad/universidad.route');
 const facultadRoutes = require('./api/components/facultad/facultad.route');
+const materiaRoutes = require('./api/components/materia/materia.route');
 
 const app = express();
 
@@ -95,22 +103,59 @@ app.use(function (error, req, res, next) {
 
     console.error(error);
 
-    res.status(httpStatus.INTERNAL_SERVER_ERROR);
-    if (error.status) res.status(error.status);
-    else if (error.statusCode) res.status(error.statusCode);
+    let status = httpStatus.INTERNAL_SERVER_ERROR;
+    if (error.status) status = error.status;
+    else if (error.statusCode) status = error.statusCode;
 
-    if (error instanceof mongoose.Error) {
-        res.json({ error });
+    res.status(status);
+
+    if (error.name === 'MongoError') {
+        //console.log('MongoError');
+
+        res.json({
+            error: {
+                message: httpStatus[500],
+                status,
+            },
+        });
+    } else if (error instanceof ValidationError) {
+        console.log('ValidationError');
+
+        res.json({
+            error: {
+                name: error.name,
+                message: {
+                    [error.path]: error.message
+                },
+                status,
+            },
+        });
+    } else if (error instanceof mongoose.Error.ValidationError) {
+        //console.log('MongooseValidationError');
+
+        let messages = {};
+
+        for (let key in error.errors) {
+            messages[key] = error.errors[key].message;
+        }
+
+        res.json({
+            error: {
+                name: error.name,
+                message: messages,
+                status,
+            },
+        });
     } else if (error instanceof APIError && error.isPublic) {
+        //console.log('APIError');
+
         res.json({
             error: {
                 name: error.name,
                 message: error.message,
-                status: error.status,
+                status,
             },
         });
-    } else if (error instanceof ValidationError) {
-        res.json({ error });
     } else {
         res.json({ error });
     }

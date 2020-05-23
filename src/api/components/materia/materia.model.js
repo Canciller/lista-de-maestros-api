@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const shortId = require('shortid');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const MateriaSchema = new mongoose.Schema({
     _id: {
@@ -9,6 +10,17 @@ const MateriaSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
+        unique: true,
+        index: true,
+    },
+});
+
+MateriaSchema.plugin(uniqueValidator, {
+    message: ({ path, value }) => {
+        switch (path) {
+            case 'name':
+                return `La materia '${value}' ya existe.`;
+        }
     },
 });
 

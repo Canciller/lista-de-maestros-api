@@ -43,6 +43,7 @@ module.exports = {
     createFacultad: {
         body: Joi.object({
             name: Joi.string().required(),
+            universidad: Joi.string().required(),
         }),
     },
     createMateria: {

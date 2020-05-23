@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const httpStatus = require('http-status');
-const APIError = require('../../../utils/APIError');
+const APIError = require('../../../util/APIError');
 
 router
     .route('*')

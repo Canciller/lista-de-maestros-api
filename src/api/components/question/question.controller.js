@@ -1,5 +1,5 @@
 const Question = require('./question.model');
-const NotFoundError = require('../../../utils/NotFoundError');
+const NotFoundError = require('../../../util/NotFoundError');
 
 module.exports = {
     load: function (req, res, next, id) {

@@ -1,14 +1,9 @@
 const router = require('express').Router();
-const { validate } = require('express-validation');
 const jwt = require('express-jwt');
-const paramValidation = require('../../../utils/paramValidation');
 const UserController = require('./user.controller');
-const getToken = require('../../../utils/getToken');
+const getToken = require('../../../util/getToken');
 
-router
-    .route('/')
-    .get(UserController.list)
-    .post(validate(paramValidation.createUser), UserController.create);
+router.route('/').get(UserController.list).post(UserController.create);
 
 router.route('/me').get(
     jwt({

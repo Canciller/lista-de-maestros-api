@@ -1,4 +1,4 @@
-const NotFoundError = require('../../../utils/NotFoundError');
+const NotFoundError = require('../../../util/NotFoundError');
 
 module.exports = function (Model, name) {
     return {

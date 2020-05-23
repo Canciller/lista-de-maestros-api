@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const { validate } = require('express-validation');
-const paramValidation = require('../../../utils/paramValidation');
 const MaestroController = require('./maestro.controller');
 
 router
     .route('/')
     .get(MaestroController.list)
-    .post(validate(paramValidation.createMaestro), MaestroController.create);
+    .post(MaestroController.create);
 
 router
     .route('/:id')
