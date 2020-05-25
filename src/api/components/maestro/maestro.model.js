@@ -31,14 +31,10 @@ const MaestroSchema = new mongoose.Schema({
         },
         required: [true, strings.gender.required],
     },
-    facultades: {
-        type: Map,
-        of: [
-            {
-                type: String,
-                ref: 'Materia',
-            },
-        ],
+    facultad: {
+        type: String,
+        ref: 'Facultad',
+        required: [true, strings.facultad.required],
     },
     active: {
         type: Boolean,

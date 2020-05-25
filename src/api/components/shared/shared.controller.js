@@ -13,6 +13,7 @@ module.exports = function (Model, name) {
         },
         list: function (req, res, next) {
             Model.find()
+                .sort({ name: 1 })
                 .then((found) => res.json(found))
                 .catch(next);
         },

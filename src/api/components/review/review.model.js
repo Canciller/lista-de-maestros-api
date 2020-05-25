@@ -25,7 +25,10 @@ const ReviewSchema = new mongoose.Schema({
     comment: {
         type: String,
         required: true,
-        maxlength: 512,
+    },
+    mean: {
+        type: Number,
+        default: 0,
     },
     dominio_de_la_asignatura: {
         type: Number,

@@ -7,7 +7,15 @@ const strings = require('./maestro.strings');
 module.exports = {
     load: function (req, res, next, id) {
         Maestro.findById(id)
-            .populate('reviews')
+            .populate({
+                path: 'reviews',
+                options: {
+                    sort: { createdAt: -1 }
+                },
+                populate: { 
+                    path: 'materia',
+                }
+            })
             .then((maestro) => {
                 req.maestro = maestro;
                 if (maestro) next();
@@ -30,21 +38,18 @@ module.exports = {
             lastname: req.body.lastname,
             degree: req.body.degree,
             gender: req.body.gender,
+            facultad: req.body.facultad,
         });
 
         Facultad.findOne({ name: req.body.facultad })
             .then((facultad) => {
                 if (facultad) {
-                    maestro.facultades = {
-                        [facultad._id]: [],
-                    };
-
                     return Maestro.findOne({
-                        firstname: req.body.firstname,
-                        lastname: req.body.lastname,
-                        degree: req.body.degree,
-                        gender: req.body.gender,
-                        [`facultades.${facultad._id}`]: { $exists: true },
+                        firstname: maestro.firstname,
+                        lastname: maestro.lastname,
+                        degree: maestro.degree,
+                        gender: maestro.gender,
+                        facultad: maestro.facultad,
                     });
                 } else
                     throw new ValidationError(
@@ -52,11 +57,11 @@ module.exports = {
                         strings.facultad.missing
                     );
             })
-            .then((foundMaestro) => {
-                if (foundMaestro) {
+            .then((maestroFound) => {
+                if(maestroFound) {
                     throw new ValidationError(
                         'facultad',
-                        strings.facultad.unique
+                        strings.facultad.unique,
                     );
                 } else {
                     return maestro.save();

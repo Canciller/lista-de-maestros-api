@@ -95,13 +95,19 @@ module.exports = {
             })
             .then((scores) => {
                 if (scores) {
+                    let mean = 0;
                     for (const key in scores) {
                         const score = scores[key];
                         review[key] = score.value;
+                        mean += score.value;
                     }
+
+                    mean /= Object.keys(scores).length;
+                    console.log(scores);
 
                     scoresSaved = scores;
 
+                    review.mean = mean;
                     return review.save();
                 } else
                     throw new NotFoundError(
