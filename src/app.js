@@ -30,6 +30,7 @@ const categoryRoutes = require('./api/components/category/category.route');
 const universidadRoutes = require('./api/components/universidad/universidad.route');
 const facultadRoutes = require('./api/components/facultad/facultad.route');
 const materiaRoutes = require('./api/components/materia/materia.route');
+const reviewRoutes = require('./api/components/review/review.route');
 
 const app = express();
 
@@ -92,7 +93,8 @@ APIRouter.use('/auth', authRoutes)
     .use('/categories', categoryRoutes)
     .use('/materias', materiaRoutes)
     .use('/universidades', universidadRoutes)
-    .use('/facultades', facultadRoutes);
+    .use('/facultades', facultadRoutes)
+    .use('/reviews', reviewRoutes);
 
 app.use('/api/v1', APIRouter);
 

@@ -7,6 +7,7 @@ const strings = require('./maestro.strings');
 module.exports = {
     load: function (req, res, next, id) {
         Maestro.findById(id)
+            .populate('reviews')
             .then((maestro) => {
                 req.maestro = maestro;
                 if (maestro) next();

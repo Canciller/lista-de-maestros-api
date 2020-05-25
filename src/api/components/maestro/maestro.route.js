@@ -6,7 +6,7 @@ router.route('/').get(MaestroController.list).post(MaestroController.create);
 router
     .route('/:id')
     .get(MaestroController.get)
-    .put(MaestroController.update)
+    //.put(MaestroController.update)
     .delete(MaestroController.remove);
 
 router.param('id', MaestroController.load);
